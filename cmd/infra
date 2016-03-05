@@ -1,0 +1,70 @@
+#!/bin/bash -e
+
+SUB_CMD_NAME="infra"
+
+cmd_desc() {
+    echo "For running infrastructure provisioning commands"
+}
+
+cmd_usage() {
+    echo "usage: ${CMD_NAME} ${SUB_CMD_NAME} [<options>] <subcommand>"
+    echo "Options:"
+    printf "    %-5s   %s\n" "-p <name>" "The infrastructure provider to target"
+    printf "    %-5s   %s\n" "-t <name>" "The type of infrastructure to provision"
+}
+
+help() {
+    cmd_usage
+    echo
+    echo "Available subcommands are:"
+    printf "    %-10s   %s\n" "create" "Create infrastructure"
+    printf "    %-10s   %s\n" "rm" "Remove infrastructure"
+    printf "    %-10s   %s\n" "info" "Show info on the infrastructure available"
+    printf "    %-10s   %s\n" "help" "Prints this help information"
+    echo
+}
+
+
+
+# Defaults
+export MACHINE_NAME=${DOCKER_MACHINE_NAME:-default}
+
+export VOLUME_DRIVER=local
+export LOGGING_DRIVER=syslog
+export CUSTOM_NETWORK_NAME=local_network
+
+# Parameters
+while getopts "m:f:v:l:n:" opt; do
+  case $opt in
+    m)
+      export MACHINE_NAME=${OPTARG}
+      ;;
+    f)
+      export OVERRIDES="${OVERRIDES} -f ${OPTARG}"
+      ;;
+    l)
+      export LOGGING_DRIVER="${OPTARG}"
+      ;;
+    v)
+      export VOLUME_DRIVER="${OPTARG}"
+      ;;
+    n)
+      export CUSTOM_NETWORK_NAME="${OPTARG}"
+      ;;
+    *)
+      echo "Invalid parameter(s) or option(s)."
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+shift $(($OPTIND -1))
+SUBCOMMAND_OPT="${1:-help}"
+
+# Only shift if there are other parameters
+if [ $# -ge 1 ]; then
+    shift
+fi
+
+${SUBCOMMAND_OPT} "$@"
