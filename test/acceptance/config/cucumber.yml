@@ -1,0 +1,3 @@
+default: --profile html_report --profile test_order  
+html_report: --format pretty --format html --out=features_report.html
+test_order: features/core/platform_management/load_platform.feature features/
