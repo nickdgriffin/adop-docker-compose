@@ -11,6 +11,6 @@ end
 
 Then(/the cartridge list should be loaded/) do
     steps %Q{
-        Given the cartridges/adop-cartridge-java repository exists in Gerrit
+        Given the cartridges/adop-cartridge-java repository exists in the SCM tool
     }
 end

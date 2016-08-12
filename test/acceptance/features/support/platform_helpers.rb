@@ -12,6 +12,14 @@ module PlatformHelperMethods
         return ENV['INITIAL_ADMIN_PASSWORD']
     end
 
+    def platform_get_cd_tool()
+      return "Jenkins"
+    end
+
+    def platform_get_scm_tool()
+      return "Gerrit"
+    end
+
 end
 
 World(PlatformHelperMethods)
