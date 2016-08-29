@@ -1,0 +1,61 @@
+#!/bin/bash -e
+
+SUB_CMD_NAME="infra"
+PROVIDER_NAME="local"
+TYPES_DIR="${SUB_CMD_DIR}/${PROVIDER_NAME}/types"
+
+# Standard Functions
+cmd_desc() {
+    echo "Creates a single Docker Machine"
+}
+
+cmd_usage() {
+    echo "usage: ${CMD_NAME} ${SUB_CMD_NAME} ${PROVIDER_NAME} [<options>] <subcommand>"
+    echo "Options:"
+    printf "    %-5s   %s\n" "-m <name>" "The name of the Docker Machine to create"
+}
+
+help() {
+    cmd_usage
+    echo
+}
+
+# Delegate Functions
+create() {
+    echo "*** Not yet implemented ***"
+}
+
+remove() {
+    echo "*** Not yet implemented ***"
+}
+
+# Defaults
+export MACHINE_NAME=${DOCKER_MACHINE_NAME:-default}
+
+export VOLUME_DRIVER=local
+export LOGGING_DRIVER=syslog
+export CUSTOM_NETWORK_NAME=local_network
+
+# Parameters
+while getopts "m:" opt; do
+  case $opt in
+    m)
+      export MACHINE_NAME=${OPTARG}
+      ;;
+    *)
+      echo "Invalid parameter(s) or option(s)."
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+shift $(($OPTIND -1))
+SUBCOMMAND_OPT="${1:-help}"
+
+# Only shift if there are other parameters
+if [ $# -ge 1 ]; then
+    shift
+fi
+
+${SUBCOMMAND_OPT} "$@"

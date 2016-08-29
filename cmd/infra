@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
 SUB_CMD_NAME="infra"
+SUB_CMD_DIR="${CLI_CMD_DIR}/subcmd_infra"
 
+# Standard Functions
 cmd_desc() {
     echo "For running infrastructure provisioning commands"
 }
@@ -18,38 +20,55 @@ help() {
     echo
     echo "Available subcommands are:"
     printf "    %-10s   %s\n" "create" "Create infrastructure"
-    printf "    %-10s   %s\n" "rm" "Remove infrastructure"
-    printf "    %-10s   %s\n" "info" "Show info on the infrastructure available"
+    printf "    %-10s   %s\n" "remove" "Remove infrastructure"
+    printf "    %-10s   %s\n" "list" "List infrastructure"
+    printf "    %-10s   %s\n" "providers" "List available providers"
     printf "    %-10s   %s\n" "help" "Prints this help information"
     echo
 }
 
+# Functions
+create() {
+    echo "*** Not yet implemented ***"
+}
 
+remove() {
+    echo "*** Not yet implemented ***"
+}
 
-# Defaults
-export MACHINE_NAME=${DOCKER_MACHINE_NAME:-default}
+list() {
+    echo "*** Not yet implemented ***"
+}
 
-export VOLUME_DRIVER=local
-export LOGGING_DRIVER=syslog
-export CUSTOM_NETWORK_NAME=local_network
+providers() {
+    echo "Available providers are:"
+    for provider in $(find ${SUB_CMD_DIR} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
+    do
+        printf "    %-10s   $(. ${SUB_CMD_DIR}/${provider}/${provider} cmd_desc)" "${provider}"
+        echo
+        
+    done
+}
+
+types() {
+    echo "Available types by provider are:"
+    echo
+    for provider in $(find ${SUB_CMD_DIR} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
+    do
+        printf "    %-10s   ${provider} \n"
+        printf "    %-10s   $(. ${SUB_CMD_DIR}/${provider}/${provider} types)"
+        echo
+    done
+}
 
 # Parameters
-while getopts "m:f:v:l:n:" opt; do
+while getopts "p:t:" opt; do
   case $opt in
-    m)
-      export MACHINE_NAME=${OPTARG}
+    p)
+      export PROVIDER_NAME="${OPTARG}"
       ;;
-    f)
-      export OVERRIDES="${OVERRIDES} -f ${OPTARG}"
-      ;;
-    l)
-      export LOGGING_DRIVER="${OPTARG}"
-      ;;
-    v)
-      export VOLUME_DRIVER="${OPTARG}"
-      ;;
-    n)
-      export CUSTOM_NETWORK_NAME="${OPTARG}"
+    t)
+      export TYPE="${OPTARG}"
       ;;
     *)
       echo "Invalid parameter(s) or option(s)."
