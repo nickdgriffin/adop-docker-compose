@@ -13,7 +13,7 @@ usage() {
     echo "usage: ${CMD_NAME} <subcommand>"
     echo
     echo "Available subcommands are:"
-    for command in $(ls $CLI_DIR/cmd)
+    for command in $(find ${CLI_CMD_DIR} -type f -printf "%f\n")
     do
         printf "    %-10s   $(. ${CLI_CMD_DIR}/${command} cmd_desc)" "${command}"
         echo
