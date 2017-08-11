@@ -29,7 +29,7 @@ ldap:
   expose:
     - "389"
   ports:
-    - "389/tcp:389/tcp"
+    - "389:389/tcp"
   environment:
     INITIAL_ADMIN_USER: ${INITIAL_ADMIN_USER}
     INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD}
@@ -107,7 +107,7 @@ sensu-uchiwa:
 sensu-api:
   container_name: sensu-api
   restart: always
-  image: accenture/adop-sensu:0.2.0
+  image: accenture/adop-sensu:0.2.1-rc1
   net: ${CUSTOM_NETWORK_NAME}
   command: api
   expose:
@@ -120,7 +120,7 @@ sensu-api:
 sensu-server:
   container_name: sensu-server
   restart: always
-  image: accenture/adop-sensu:0.2.0
+  image: accenture/adop-sensu:0.2.1-rc1
   net: ${CUSTOM_NETWORK_NAME}
   command: server
   environment:
@@ -132,16 +132,19 @@ sensu-server:
 sensu-client:
   container_name: sensu-client
   restart: always
-  image: accenture/adop-sensu:0.2.0
-  net: ${CUSTOM_NETWORK_NAME}
+  image: accenture/adop-sensu:0.2.1-rc1
+  net: ${CUSTOM_NETWORK_NAME} 
+  privileged: true
   command: client
+  pid: host
   environment:
     TRANSPORT_NAME: rabbitmq
     CLIENT_NAME: core
     CLIENT_ADDRESS: 127.0.0.1
     RABBITMQ_HOST: sensu-rabbitmq
     JENKINS_PREFIX: jenkins
-    CLIENT_SUBSCRIPTIONS: "proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
+    CLIENT_DEREGISTER: "false"
+    CLIENT_SUBSCRIPTIONS: "proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana,basic"
 
 sensu-rabbitmq:
   container_name: sensu-rabbitmq
@@ -206,7 +209,7 @@ jenkins:
   #build: ../images/docker-jenkins/
   net: ${CUSTOM_NETWORK_NAME}
   ports:
-    - "50000/tcp:50000/tcp"
+    - "50000:50000/tcp"
   expose:
     - "8080"
     - "50000"

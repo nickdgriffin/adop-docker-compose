@@ -29,6 +29,8 @@ sensu-server:
 sensu-client:
   volumes:
     - sensu_client_conf:/etc/sensu/conf.d
+    - /sys/:/sys/:ro
+    - /:/host/fs/:ro
 
 sensu-rabbitmq:
   volumes:
